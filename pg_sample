@@ -869,17 +869,17 @@ while ($num_rows) {
 
 # fetch all sequences and current values
 $sth = $dbh->prepare(qq{
-  SELECT sequence_schema
-         ,sequence_name
-    FROM information_schema.sequences
+  SELECT schemaname
+         ,sequencename
+    FROM pg_sequences
    WHERE sequence_schema NOT LIKE 'pg_%'
 });
 $sth->execute;
 my %seq;
 while (my $row = $sth->fetchrow_hashref) {
-  next if $opt{schema} && $row->{sequence_schema} ne $opt{schema};
+  next if $opt{schema} && $row->{schemaname} ne $opt{schema};
 
-  my $name = Table->new($row->{sequence_schema}, $row->{sequence_name});
+  my $name = Table->new($row->{schemaname}, $row->{sequencename});
   $seq{ $name } = 0;
 }
 foreach my $name (keys %seq) {
